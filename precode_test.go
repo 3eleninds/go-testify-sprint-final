@@ -25,14 +25,18 @@ func TestMainHandlerWhenOk(t *testing.T) {
 }
 
 func TestMainHandlerWhenWrongCity(t *testing.T) {
-	req := httptest.NewRequest("GET", "/cafe?count=10&city!=moscow", nil)
+	req := httptest.NewRequest("GET", "/cafe?count=10&city=perm", nil)
 
 	responseRecorder := httptest.NewRecorder()
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
+	expectedErrorMessage := "wrong city value"
+
 	status := responseRecorder.Code
+	body := responseRecorder.Body.String()
 	require.Equal(t, http.StatusBadRequest, status)
+	require.Equal(t, body, expectedErrorMessage)
 
 }
 
